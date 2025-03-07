@@ -1,7 +1,5 @@
 var rows = height = window.innerHeight // height
 var columns = width = window.innerWidth // width
-//const rows = 200 // height
-//const columns = 500 // width
 var canvas = document.getElementById('grid');
 canvas.height = rows
 canvas.width = columns
@@ -215,9 +213,72 @@ document.addEventListener('keypress', (e) => {
     else {
       el.mozRequestFullScreen();
     }     
-  } else if (e.key === 'd') {
-    run = false
-  }
+  } else if (e.key === 's') {
+    run = true;
+    startInterval();
+  } else if (e.key === 'd') run = false;
 })
 
 window.requestAnimationFrame(startInterval)
+
+function customAlert(message, alertKey) {
+  if (localStorage.getItem(alertKey) === "hidden") return;
+
+  canvas.style.pointerEvents = "none";
+  const alertBox = document.createElement("div");
+  alertBox.style.position = "fixed";
+  alertBox.style.top = "20px";
+  alertBox.style.left = "50%";
+  alertBox.style.transform = "translateX(-50%)";
+  alertBox.style.padding = "15px";
+  alertBox.style.background = "#333";
+  alertBox.style.color = "#fff";
+  alertBox.style.borderRadius = "5px";
+  alertBox.style.boxShadow = "0px 4px 6px rgba(0, 0, 0, 0.1)";
+  alertBox.style.zIndex = "1000";
+  alertBox.style.textAlign = "center";
+  alertBox.style.width = "40%";
+
+  const messageText = document.createElement("p");
+  messageText.textContent = message;
+  alertBox.appendChild(messageText);
+
+  const checkboxContainer = document.createElement("div");
+  checkboxContainer.style.marginTop = "10px";
+  
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.id = "dontShowAgain";
+  
+  const label = document.createElement("label");
+  label.htmlFor = "dontShowAgain";
+  label.textContent = "Don't show again";
+  label.style.marginLeft = "5px";
+
+  checkboxContainer.appendChild(checkbox);
+  checkboxContainer.appendChild(label);
+  alertBox.appendChild(checkboxContainer);
+
+  const closeButton = document.createElement("button");
+  closeButton.textContent = "OK";
+  closeButton.style.marginTop = "10px";
+  closeButton.style.padding = "5px 10px";
+  closeButton.style.border = "none";
+  closeButton.style.background = "#ff5e57";
+  closeButton.style.color = "#fff";
+  closeButton.style.borderRadius = "3px";
+  closeButton.style.cursor = "pointer";
+
+  closeButton.onclick = function () {
+      if (checkbox.checked) {
+          localStorage.setItem(alertKey, "hidden");
+      }
+      document.body.removeChild(alertBox);
+      canvas.style.pointerEvents = "initial";
+  };
+
+  alertBox.appendChild(closeButton);
+  document.body.appendChild(alertBox);
+}
+
+customAlert("Welcome to my implementation of Conway's Game of Life! Click anywhere to make some starter cells.\nPress 'F' for fullscreen, 'D' to pause, and 'S' to run again.", "conway-alert");

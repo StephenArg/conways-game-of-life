@@ -62,7 +62,6 @@ class BitSet {
   }
   
   print() {
-    // LOL SHITTY CODE
     let buf = [];
     for (let i = 0; i < this.num_bits; ++i) {
       buf.push(this.test(i) ? "1" : "0");
